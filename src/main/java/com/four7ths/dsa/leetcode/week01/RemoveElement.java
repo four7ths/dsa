@@ -3,9 +3,6 @@ package com.four7ths.dsa.leetcode.week01;
 /**
  * 27 remove element
  * 给定一个数组和目标值target，【原地】删除数组中所有等于target的元素，并返回删除后数组长度
- *
- * @author tanglei <tanglei@kuaishou.com>
- * Created on 2021-12-21
  */
 public class RemoveElement {
     public int removeElement(int[] nums, int val) {
