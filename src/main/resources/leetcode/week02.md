@@ -283,6 +283,7 @@ public ListNode oddEvenList(ListNode head) {
 并且它们的每个节点只能存储一位数字:
 
 ```java
+// TODO: 增加递归实现
 public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
     ListNode dmyNode = new ListNode(-1);
     ListNode cur = dmyNode;
@@ -299,6 +300,110 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 
         l1 = l1 == null ? null : l1.next;
         l2 = l2 == null ? null : l2.next;
+    }
+    return dmyNode.next;
+}
+```
+
+### remove linked list elements (203)
+
+删除链表中等于给定值【val】的所有节点:
+
+```java
+public ListNode removeElements(ListNode head, int val) {
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+
+    ListNode prev = dmyNode;
+    while (prev.next != null) {
+        if (prev.next.val == val) {
+            prev.next = prev.next.next;
+        } else {
+            prev = prev.next;
+        }
+    }
+
+    return dmyNode.next;
+}
+```
+
+
+### remove duplicates from sorted list II (82)
+给定一个【排序】链表，删除所有含有重复数字的节点，只保留原始链表中【没有重复出现】的数字:
+- \>\> 1 -> 2 -> 3 -> 3 > 4 -> 4 -> 5
+- \<\< 1 -> 2 -> 5
+
+```java
+public ListNode deleteDuplication01(ListNode head) {
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+
+    ListNode prev = dmyNode;
+    ListNode cur = head;
+
+    while (cur != null && cur.next != null) {
+        if (cur.val == cur.next.val) {
+            do {
+                cur = cur.next;
+            } while (cur.next != null && cur.val == cur.next.val);
+            prev.next = cur.next;
+        } else {
+            prev = cur;
+        }
+        cur = cur.next;
+    }
+
+    return dmyNode.next;
+}
+```
+
+
+### merge two sorted list (23)
+
+合并两个有序链表:
+
+```java
+public ListNode mergeTwoListsRecursive(ListNode l1, ListNode l2) {
+    if (l1 == null) {
+        return l2;
+    }
+    if (l2 == null) {
+        return l1;
+    }
+    ListNode head;
+    if (l1.val < l2.val) {
+        head = l1;
+        head.next = mergeTwoLists(l1.next, l2);
+    } else {
+        head = l2;
+        head.next = mergeTwoLists(l1, l2.next);
+    }
+    return head;
+}
+
+public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dmyNode = new ListNode(-1);
+    ListNode cur = dmyNode;
+
+    while (l1 != null && l2 != null) {
+        if (l1.val < l2.val) {
+            cur.next = l1;
+            l1 = l1.next;
+        } else {
+            cur.next = l2;
+            l2 = l2.next;
+        }
+        cur = cur.next;
+    }
+    if (l1 != null) {
+        cur.next = l1;
+    }
+    if (l2 != null) {
+        cur.next = l2;
     }
     return dmyNode.next;
 }
