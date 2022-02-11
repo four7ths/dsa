@@ -381,3 +381,290 @@ private List<String> getNeighbors(String str, HashSet<String> words) {
     return ret;
 }
 ```
+
+### 递增的三元子序列 (334)
+```java
+public boolean increasingTriplet(int[] nums) {
+    if (nums == null || nums.length < 3) {
+        return false;
+    }
+    int min = Integer.MAX_VALUE;
+    int mid = Integer.MAX_VALUE;
+
+    for (int n : nums) {
+        if (n > mid) {
+            return true;
+        } else if (n < min) {
+            min = n;
+        } else if (n > min && n < mid) {
+            mid = n;
+        }
+    }
+
+    return false;
+}
+```
+
+### 前K个高频元素
+
+给定一个数组和整数k，返回数组中出现频率前K高的元素:
+
+```java
+public int[] topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> freq = new HashMap<>(nums.length);
+    for (int n : nums) {
+        freq.put(n, freq.getOrDefault(n, 0) + 1);
+    }
+
+    // 按照频率的小顶堆
+    Queue<Integer> pq = new PriorityQueue<>(Comparator.comparing(freq::get));
+    for (int n : freq.keySet()) {
+        if (pq.size() < k) {
+            pq.add(n);
+        } else {
+            if (freq.get(pq.element()) < freq.get(n)) {
+                pq.remove();
+                pq.add(n);
+            }
+        }
+    }
+
+    return pq.stream().mapToInt(Integer::valueOf).toArray();
+}
+
+public int[] topKFrequentV2(int[] nums, int k) {
+    Map<Integer, Integer> freq = new HashMap<>(nums.length);
+    for (int n : nums) {
+        freq.merge(n, 1, Integer::sum);
+    }
+
+    // 按照频率的大顶堆
+    Queue<Integer> pq = new PriorityQueue<>((x, y) -> freq.get(y) - freq.get(x));
+    pq.addAll(freq.keySet());
+
+    int[] ret = new int[k];
+    for (int i = 0; i < k; i++) {
+        ret[i] = pq.remove();
+    }
+
+    return ret;
+}
+
+// Map按照value排序，使用Stream流
+public int[] topKFrequentV3(int[] nums, int k) {
+    Map<Integer, Integer> freq = new HashMap<>(nums.length);
+    for (int n : nums) {
+        freq.merge(n, 1, Integer::sum);
+    }
+
+    LinkedHashMap<Integer, Integer> maps = freq.entrySet().stream()
+            .sorted(Map.Entry.<Integer, Integer> comparingByValue().reversed())
+            .limit(k)
+            .collect(Collectors.toMap(
+                    Entry::getKey,
+                    Entry::getValue,
+                    (old, now) -> old, LinkedHashMap::new
+            ));
+    return maps.keySet().stream().mapToInt(Integer::valueOf).toArray();
+}
+
+// Map的key按照频率逆序，取前k个元素
+public int[] topKFrequentV4(int[] nums, int k) {
+    Map<Integer, Integer> freq = new HashMap<>(nums.length);
+    for (int n : nums) {
+        freq.merge(n, 1, Integer::sum);
+    }
+
+    return freq.keySet().stream()
+            .sorted((x, y) -> freq.get(y) - freq.get(x))
+            .limit(k)
+            .mapToInt(Integer::valueOf)
+            .toArray();
+}
+```
+
+### 合并K个有序链表 (23)
+
+给定一个链表数组，每个链表都已按照升序排列，将所有链表合并成一个升序链表:
+
+```java
+public ListNode mergeKLists(ListNode[] lists) {
+    ListNode dmyNode = new ListNode(-1);
+    ListNode probe = dmyNode;
+
+    Queue<ListNode> pq = new PriorityQueue<>(Comparator.comparingInt(x -> x.val));
+    for (ListNode list : lists) {
+        if (list != null) {
+            pq.add(list);
+        }
+    }
+
+    while (!pq.isEmpty()) {
+        ListNode node = pq.remove();
+        probe.next = node;
+        probe = probe.next;
+        if (node.next != null) {
+            pq.add(node.next);
+        }
+    }
+
+    return dmyNode.next;
+}
+```
+
+### 二叉树的最大深度 (104)
+
+给定一个二叉树，找出其最大深度:
+
+```java
+public int maxDepth(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+}
+```
+
+### 二叉树的最小深度 (111)
+
+最小深度是指从根节点到最近叶子节点最短路径上的节点数量:
+
+```java
+public int minDepth(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    int left = minDepth(root.left);
+    int right = minDepth(root.right);
+
+    return (left != 0 && right != 0)
+           ? Math.min(left, right) + 1
+           : left + right + 1;
+}
+
+// 层序遍历
+public int minDepthV2(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    if (root.left == null && root.right == null) {
+        return 1;
+    }
+
+    Deque<TreeNode> queue = new LinkedList<>();
+    queue.add(root);
+    int level = 0;
+    while (!queue.isEmpty()) {
+        int sz = queue.size();
+        ++level;
+        for (int i = 0; i < sz; i++) {
+            TreeNode node = queue.remove();
+            if (node.left == null && node.right == null) {
+                return level;
+            }
+            if (node.left != null) {
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                queue.add(node.right);
+            }
+        }
+    }
+    throw new RuntimeException();
+}
+```
+
+### 翻转二叉树 (226)
+
+给定一颗二叉树根节点root，翻转该二叉树，并返回根节点:
+
+```java
+public TreeNode invertTree(TreeNode root) {
+    if (root != null) {
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+
+        invertTree(root.left);
+        invertTree(root.right);
+    }
+    return root;
+}
+```
+
+### 相同的树 (100)
+
+给定两个二叉树根节点p和q，验证两棵树是否完全相同:
+
+```java
+public boolean isSameTree(TreeNode p, TreeNode q) {
+    if (p == null && q == null) {
+        return true;
+    }
+    if (p == null || q == null) {
+        return false;
+    }
+    if (p.val != q.val) {
+        return false;
+    }
+
+    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+}
+```
+
+### 镜像树 (101)
+
+给定一颗二叉树，判断其是否是镜像的:
+
+```java
+public boolean isSymmetric(TreeNode root) {
+    if (root == null) {
+        return true;
+    }
+    return isSymmetric(root.left, root.right);
+}
+
+private boolean isSymmetric(TreeNode p, TreeNode q) {
+    if (p == null && q == null) {
+        return true;
+    }
+    if (p == null || q == null) {
+        return false;
+    }
+    if (p.val != q.val) {
+        return false;
+    }
+    return isSymmetric(p.left, q.right) && isSymmetric(p.right, q.left);
+}
+```
+
+### 完全二叉树的节点数量 (222)
+
+给定一颗完全二叉树的根节点，求出该树中节点个数:
+
+```java
+public int countNodes(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+
+    int leftDepth = getDepth(root.left);
+    int rightDepth = getDepth(root.right);
+    if (leftDepth == rightDepth) {
+        return (1 << leftDepth) + countNodes(root.right);
+    } else {
+        // assert (rightDepth + 1 == leftDepth)
+        return (1 << rightDepth) + countNodes(root.left);
+    }
+}
+
+private int getDepth(TreeNode node) {
+    int depth = 0;
+    while (node != null) {
+        ++depth;
+        node = node.left;
+    }
+    return depth;
+}
+```
