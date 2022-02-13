@@ -430,3 +430,245 @@ public boolean isValidBST(TreeNode root) {
     return lCond && mCond && rCond;
 }
 ```
+
+### 组合 (77)
+
+给定两个整数n和k，返回1 ... n中所有可能的k个数的组合:
+
+```java
+List<List<Integer>> res = new ArrayList<>();
+
+public List<List<Integer>> combine(int n, int k) {
+    backtrace(n, k, 1, new ArrayList<>());
+    return res;
+}
+
+private void backtrace(int n, int k, int idx, ArrayList<Integer> tmp) {
+    if (tmp.size() == k) {
+        res.add(new ArrayList<>(tmp));
+        return;
+    }
+
+    // 搜索上界 + 还需要元素个数 - 1 = n
+    for (int i = idx; i <= n - (k - tmp.size()) + 1; i++) {
+        tmp.add(i);
+        backtrace(n, k, i + 1, tmp);
+        tmp.remove(tmp.size() - 1);
+    }
+}
+```
+
+### 电话号码的字母组合 (17)
+
+给定一个仅包含数字2-9的字符串，返回所有它能表示的字母组合，答案可以按任意顺序返回:
+
+```java
+private final List<String> res = new ArrayList<>();
+
+private static final String[] LETTERS = {
+        "",
+        "",
+        "abc",
+        "def",
+        "ghi",
+        "jkl",
+        "mno",
+        "pqrs",
+        "tuv",
+        "wxyz"
+};
+
+public List<String> letterCombinations(String digits) {
+    if (digits == null || "".equals(digits)) {
+        return res;
+    }
+    backtrace(digits, 0, new StringBuilder());
+    return res;
+}
+
+private void backtrace(String digits, int idx, StringBuilder sb) {
+    if (idx == digits.length()) {
+        res.add(sb.toString());
+        return;
+    }
+    String letter = LETTERS[digits.charAt(idx) - '0'];
+    for (int i = 0; i < letter.length(); i++) {
+        backtrace(digits, idx + 1, sb.append(letter.charAt(i)));
+        // 注意移除
+        sb.deleteCharAt(sb.length() - 1);
+    }
+}
+```
+
+### 分割回文串 (131)
+
+给定一个字符串s，将s分割成一些子串，使每个子串都是回文串:
+
+```java
+List<List<String>> res = new ArrayList<>();
+
+public List<List<String>> partition(String s) {
+    if (s == null || s.length() == 0) {
+        return res;
+    }
+    backtrace(s, 0, new ArrayList<>());
+    return res;
+}
+
+private void backtrace(String s, int idx, ArrayList<String> tmp) {
+    if (idx == s.length()) {
+        res.add(new ArrayList<>(tmp));
+        return;
+    }
+    for (int end = 1; idx + end <= s.length(); end++) {
+        String seg = s.substring(idx, idx + end);
+        if (isPalindrome(seg)) {
+            tmp.add(seg);
+            backtrace(s, idx + end, tmp);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+}
+
+private boolean isPalindrome(String str) {
+    if (str == null || str.length() == 0) {
+        return false;
+    }
+    for (int i = 0; i < str.length() / 2; i++) {
+        if (str.charAt(i) != str.charAt(str.length() - 1 - i)) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+### 全排列 I (46)
+
+给定一个不含重复数字的数组，返回其所有可能的全排列:
+
+```java
+List<List<Integer>> res = new ArrayList<>();
+
+public List<List<Integer>> permute(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return res;
+    }
+    boolean[] visited = new boolean[nums.length];
+    backtrace(nums, 0, new ArrayList<>(), visited);
+    return res;
+}
+
+private void backtrace(int[] nums, int idx, ArrayList<Integer> tmp, boolean[] visited) {
+    if (idx == nums.length) {
+        res.add(new ArrayList<>(tmp));
+        return;
+    }
+    for (int i = 0; i < nums.length; i++) {
+        if (!visited[i]) {
+            visited[i] = true;
+            tmp.add(nums[i]);
+            backtrace(nums, idx + 1, tmp, visited);
+            visited[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+}
+
+public List<List<Integer>> permuteV2(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return res;
+    }
+    permuteV2(nums, 0, nums.length - 1);
+    return res;
+}
+
+private void permuteV2(int[] nums, int l, int r) {
+    if (l == r) {
+        res.add(Arrays.stream(nums).boxed().collect(Collectors.toList()));
+        return;
+    }
+    for (int i = l; i <= r; i++) {
+        swap(nums, i, l);
+        permuteV2(nums, l + 1, r);
+        swap(nums, i, l);
+    }
+}
+```
+
+### 全排列 II (47)
+
+给定一个可包含重复数字的序列，按任意顺序返回所有不重复的全排列:
+
+```java
+List<List<Integer>> res = new ArrayList<>();
+
+public List<List<Integer>> permuteUnique(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return res;
+    }
+    Arrays.sort(nums);
+    boolean[] visited = new boolean[nums.length];
+    backtrace(nums, 0, new ArrayList<>(), visited);
+    return res;
+}
+
+private void backtrace(int[] nums, int idx, ArrayList<Integer> tmp, boolean[] visited) {
+    if (idx == nums.length) {
+        res.add(new ArrayList<>(tmp));
+        return;
+    }
+    for (int i = 0; i < nums.length; i++) {
+        if (!visited[i]) {
+            if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            visited[i] = true;
+            backtrace(nums, idx + 1, tmp, visited);
+            tmp.remove(tmp.size() - 1);
+            visited[i] = false;
+        }
+    }
+}
+```
+
+### 复原IP地址 (93)
+
+给定一个字符串，返回可能所有的合法ip地址:
+
+```java
+List<String> res = new ArrayList<>();
+
+public List<String> restoreIpAddresses(String s) {
+    if (s == null || s.length() < 4 || s.length() > 12) {
+        return res;
+    }
+    backtrace(s, 0, new ArrayList<>());
+    return res;
+}
+
+private void backtrace(String s, int idx, ArrayList<String> ips) {
+    if (idx == s.length() && ips.size() == 4) {
+        res.add(String.join(".", ips));
+        return;
+    }
+    // 剪枝操作
+    if (s.length() - idx > (4 - ips.size()) * 3) {
+        return;
+    }
+    for (int end = 1; end <= 3; end++) {
+        if (idx + end > s.length()) {
+            return;
+        }
+        String seg = s.substring(idx, idx + end);
+        if ((seg.startsWith("0") && seg.length() > 1) || (seg.length() == 3 && Integer.parseInt(seg) > 255)) {
+            return;
+        }
+        ips.add(seg);
+        // 从idx+end开始进行下一次回溯
+        backtrace(s, idx + end, ips);
+        ips.remove(ips.size() - 1);
+    }
+}
+```
