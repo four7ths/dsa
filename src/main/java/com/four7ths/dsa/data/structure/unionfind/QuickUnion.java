@@ -1,8 +1,7 @@
 package com.four7ths.dsa.data.structure.unionfind;
 
 /**
- * @author tanglei <tanglei@kuaishou.com>
- * Created on 2022-02-15
+ * Quick Union
  */
 public class QuickUnion extends AbstractUF {
 
