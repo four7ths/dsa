@@ -553,3 +553,183 @@ private boolean isValid(int x, int y) {
     return x >= 0 && x < rows && y >= 0 && y < cols;
 }
 ```
+
+### N皇后问题 I (51) 
+
+给定一个数字n，返回n皇后可能的排列方式：
+
+- 输入: n=4
+- 输出: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+
+```java
+private final List<List<String>> res = new ArrayList<>();
+
+// cols[i]==true：第i列存在皇后
+private boolean[] cols;
+// cols[i+j]==true: i+j上存在皇后
+private boolean[] dia1;
+//cols[i-j]上存在皇后，但是i-j可能为负数，需要做一次加上n-1进行平移
+private boolean[] dia2;
+
+public List<List<String>> solveNQueens(int n) {
+    if (n <= 0) {
+        return res;
+    }
+    cols = new boolean[n];
+    dia1 = new boolean[2 * n - 1];
+    dia2 = new boolean[2 * n - 1];
+
+    solveNQueens0(n, 0, new ArrayList<>());
+
+    return res;
+}
+
+private void solveNQueens0(int n, int row, ArrayList<Integer> queue) {
+    if (row == n) {
+        generateBoard(n, queue);
+        return;
+    }
+    for (int col = 0; col < n; col++) {
+        if (!cols[col] && !dia1[row + col] && !dia2[row - col + n - 1]) {
+            queue.add(col);
+            cols[col] = true;
+            dia1[row + col] = true;
+            dia2[row - col + n - 1] = true;
+            solveNQueens0(n, row + 1, queue);
+            dia2[row - col + n - 1] = false;
+            dia1[row + col] = false;
+            cols[col] = false;
+            queue.remove(queue.size() - 1);
+        }
+    }
+}
+
+private void generateBoard(int n, ArrayList<Integer> queue) {
+    List<String> tmp = new ArrayList<>();
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < n; i++) {
+        sb.append('.');
+    }
+    for (int i = 0; i < n; i++) {
+        sb.setCharAt(queue.get(i), 'Q');
+        tmp.add(sb.toString());
+        sb.setCharAt(queue.get(i), '.');
+    }
+
+    res.add(tmp);
+}
+```
+
+### N皇后问题 II (52)
+
+给定一个数字n，返回n皇后问题所有的方案数量:
+
+```java
+private int total;
+
+// cols[i]==true：第i列存在皇后
+private boolean[] cols;
+// cols[i+j]==true: i+j上存在皇后
+private boolean[] dia1;
+//cols[i-j]上存在皇后，但是i-j可能为负数，需要做一次加上n-1进行平移
+private boolean[] dia2;
+
+public int totalNQueens(int n) {
+    if (n <= 0) {
+        return total;
+    }
+    cols = new boolean[n];
+    dia1 = new boolean[2 * n - 1];
+    dia2 = new boolean[2 * n - 1];
+
+    solveNQueens0(n, 0, new ArrayList<>());
+
+    return total;
+}
+
+private void solveNQueens0(int n, int row, ArrayList<Integer> queue) {
+    if (row == n) {
+        ++total;
+        return;
+    }
+    for (int col = 0; col < n; col++) {
+        if (!cols[col] && !dia1[row + col] && !dia2[row - col + n - 1]) {
+            queue.add(col);
+            cols[col] = true;
+            dia1[row + col] = true;
+            dia2[row - col + n - 1] = true;
+            solveNQueens0(n, row + 1, queue);
+            dia2[row - col + n - 1] = false;
+            dia1[row + col] = false;
+            cols[col] = false;
+            queue.remove(queue.size() - 1);
+        }
+    }
+}
+```
+
+### 解数独 (19) 
+
+编写一个程序解决数独问题（2维数组中非数字用.表示），一个数独的解法需遵循如下规则：
+- 数字1-9在每一行只能出现一次
+- 数字1-9在每一列只能出现一次
+- 数字1-9在每一个3x3宫内只能出现一次
+
+```java
+// rows[i][j]=true: 第i行中存在数字j
+private final boolean[][] rows = new boolean[9][10];
+// cols[i][j]=true: 第i列中存在数字j
+private final boolean[][] cols = new boolean[9][10];
+// blocks[i][j]=true: 第i个3*3block块中存在数字j
+private final boolean[][] blocks = new boolean[9][10];
+
+public void solveSudoku(char[][] board) {
+    for (int i = 0; i < board.length; i++) {
+        for (int j = 0; j < board[0].length; j++) {
+            if (board[i][j] != '.') {
+                int n = board[i][j] - '0';
+                rows[i][n] = true;
+                cols[j][n] = true;
+                blocks[i / 3 * 3 + j / 3][n] = true;
+            }
+        }
+    }
+
+    dfs(board, 0, 0);
+}
+
+private boolean dfs(char[][] board, int x, int y) {
+    while (board[x][y] != '.') {
+        if (++y == 9) {
+            y = 0;
+            ++x;
+        }
+        if (x == 9) {
+            return true;
+        }
+    }
+
+    // Assert (board[x][y]=='.')
+    for (int num = 1; num <= 9; num++) {
+        int blockIdx = x / 3 * 3 + y / 3;
+        if (!rows[x][num] && !cols[y][num] && !blocks[blockIdx][num]) {
+            board[x][y] = (char) (num + '0');
+            rows[x][num] = true;
+            cols[y][num] = true;
+            blocks[blockIdx][num] = true;
+
+            if (dfs(board, x, y)) {
+                return true;
+            }
+
+            blocks[blockIdx][num] = false;
+            cols[y][num] = false;
+            rows[x][num] = false;
+            board[x][y] = '.';
+        }
+    }
+
+    return false;
+}
+```

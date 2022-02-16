@@ -408,3 +408,351 @@ public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     return dmyNode.next;
 }
 ```
+
+### 两数相加 II (445)
+
+给定两个非空链表来代表两个非负整数，数字最高位位于链表开始位置。它们的每个节点只存储单个数字，将这两数相加会返回一个新的链表。
+注意不能对链表中元素进行翻转:
+- 输入：l1 = [7,2,4,3], l2 = [5,6,4]
+- 输出：[7,8,0,7]
+
+```java
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    Deque<ListNode> stk1 = new LinkedList<>();
+    Deque<ListNode> stk2 = new LinkedList<>();
+
+    ListNode p = l1;
+    while (p != null) {
+        stk1.push(p);
+        p = p.next;
+    }
+    p = l2;
+    while (p != null) {
+        stk2.push(p);
+        p = p.next;
+    }
+
+    int carry = 0;
+    ListNode head = null;
+    while (!stk1.isEmpty() || !stk2.isEmpty() || carry == 1) {
+        int n1 = stk1.isEmpty() ? 0 : stk1.pop().val;
+        int n2 = stk2.isEmpty() ? 0 : stk2.pop().val;
+        int val = (n1 + n2 + carry) % 10;
+        carry = (n1 + n2 + carry) / 10;
+        head = new ListNode(val, head);
+    }
+
+    return head;
+}
+
+// 递归：较短链表的值加载较长链表上
+public ListNode addTwoNumbersV2(ListNode l1, ListNode l2) {
+    if (l1 == null) {
+        return l2;
+    }
+    if (l2 == null) {
+        return l1;
+    }
+    int len1 = 0;
+    int len2 = 0;
+    ListNode p = l1;
+    while (p != null) {
+        ++len1;
+        p = p.next;
+    }
+    p = l2;
+    while (p != null) {
+        ++len2;
+        p = p.next;
+    }
+
+    ListNode head = len1 >= len2
+                    ? addTwoNumbers0(l1, len1, l2, len2)
+                    : addTwoNumbers0(l2, len2, l1, len1);
+    if (c == 1) {
+        head = new ListNode(1, head);
+    }
+
+    return head;
+}
+
+private int c; // 进位
+
+// len1 >= len2
+private ListNode addTwoNumbers0(ListNode longList, int len1, ListNode shotList, int len2) {
+    if (len1 == len2 && len1 == 1) {
+        int tmp = longList.val;
+        longList.val = (tmp + shotList.val) % 10;
+        c = (tmp + shotList.val) / 10;
+        return longList;
+    }
+    if (len1 > len2) {
+        int tmp = longList.val;
+        longList.next = addTwoNumbers0(longList.next, len1 - 1, shotList, len2);
+        longList.val = (tmp + c) % 10;
+        c = (tmp + c) / 10;
+        return longList;
+    }
+    longList.next = addTwoNumbers0(longList.next, len1 - 1, shotList.next, len2 - 1);
+    int tmp = longList.val;
+    longList.val = (tmp + shotList.val + c) % 10;
+    c = (tmp + shotList.val + c) / 10;
+    return longList;
+}
+```
+
+### O(1)删除链表中节点 237
+
+```java
+public void deleteNode(ListNode node) {
+    if (node == null) {
+        return;
+    }
+    if (node.next == null) {
+        node = null;
+        return;
+    }
+    node.val = node.next.val;
+    node.next = node.next.next;
+}
+```
+
+### 链表插入排序 (147) 
+
+```java
+public ListNode insertionSortList(ListNode head) {
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+
+    ListNode prev = head;
+    ListNode cur = prev.next;
+    while (cur != null) {
+        if (cur.val >= prev.val) {
+            prev = cur;
+            cur = cur.next;
+            continue;
+        }
+        // dmyNode.next -> ... -> prev -> cur -> ...
+        // [dmyNode.next...prev]都是有序的
+        ListNode pp = dmyNode;
+        ListNode p = pp.next;
+        while (cur.val > p.val) {
+            pp = p;
+            p = p.next;
+        }
+        // 将cur插入到pp -> p之间: pp -> cur -> p -> ... -> prev -> cur.next
+        prev.next = cur.next;
+        cur.next = p;
+        pp.next = cur;
+
+        cur = prev.next;
+    }
+
+    return dmyNode.next;
+}
+```
+
+### 删除链表的倒数第n个结点 (19)
+
+```java
+public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+
+    ListNode f = dmyNode;
+    for (int i = 0; i < n + 1; i++) {
+        if (f == null) {
+            return null;
+        }
+        f = f.next;
+    }
+
+    ListNode s = dmyNode;
+    while (f != null) {
+        s = s.next;
+        f = f.next;
+    }
+
+    s.next = s.next.next;
+    return dmyNode.next;
+}
+```
+
+### k组反转链表 (25)
+
+给定一个链表，每k个节点一组进行翻转，返回翻转后的链表，k是一个正整数，它的值小于或等于链表的长度:
+
+```java
+public ListNode reverseKGroup(ListNode head, int k) {
+    if (head == null || head.next == null || k == 1) {
+        return head;
+    }
+
+    // prev -> rangeStart -> ... -> rangeEnd -> next -> ...
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+    ListNode prev = dmyNode;
+
+    ListNode rangeStart;
+    ListNode rangeEnd;
+    ListNode next;
+
+    while ((rangeEnd = hasNextKNode(prev, k)) != null) {
+        next = rangeEnd.next;
+        rangeStart = prev.next;
+
+        // 翻转[rangeStart, rangeEnd]
+        ListNode cur = rangeStart;
+        ListNode tmpPrev = prev;
+        while (cur != next) {
+            ListNode tmpNext = cur.next;
+            cur.next = tmpPrev;
+            tmpPrev = cur;
+            cur = tmpNext;
+        }
+
+        prev.next = tmpPrev;
+        rangeStart.next = next;
+        prev = rangeStart;
+    }
+
+    return dmyNode.next;
+}
+
+// 递归实现
+public ListNode reverseKGroupV2(ListNode head, int k) {
+    ListNode tail = head;
+    for (int i = 0; i < k; i++) {
+        if (tail == null) {
+            return head;
+        }
+        tail = tail.next;
+    }
+    ListNode newHead = reverseRange(head, tail);
+    head.next = reverseKGroupV2(tail, k);
+    return newHead;
+}
+
+// 反转[head, tail)之间节点
+private ListNode reverseRange(ListNode head, ListNode tail) {
+    ListNode prev = null;
+    ListNode cur = head;
+    ListNode next;
+    while (cur != tail) {
+        next = cur.next;
+        cur.next = prev;
+        prev = cur;
+        cur = next;
+    }
+    return prev;
+}
+
+
+private ListNode hasNextKNode(ListNode prev, int k) {
+    ListNode cur = prev;
+    for (int i = 0; i < k; i++) {
+        if (cur.next == null) {
+            return null;
+        }
+        cur = cur.next;
+    }
+    return cur;
+}
+```
+
+### O(nlogn)时间复杂度内完成链表排序 (148)
+
+```java
+public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null) {
+        return head;
+    }
+    return mergeSort(head);
+}
+
+private ListNode mergeSort(/*@NonNull*/ ListNode head) {
+    if (head.next == null) {
+        return head;
+    }
+    ListNode s = head;
+    ListNode f = head;
+    ListNode prev = null;
+    while (f != null && f.next != null) {
+        prev = s;
+        s = s.next;
+        f = f.next.next;
+    }
+    prev.next = null;
+    ListNode left = mergeSort(head);
+    ListNode right = mergeSort(s);
+    return merge(left, right);
+}
+
+private ListNode merge(ListNode left, ListNode right) {
+    ListNode dmyNode = new ListNode(-1);
+    ListNode prev = dmyNode;
+    while (left != null && right != null) {
+        if (left.val < right.val) {
+            prev.next = left;
+            left = left.next;
+        } else {
+            prev.next = right;
+            right = right.next;
+        }
+        prev = prev.next;
+    }
+    prev.next = left == null ? right : left;
+    return dmyNode.next;
+}
+
+// 自底向上归并排序
+public ListNode sortListV2(ListNode head) {
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+
+    ListNode cur = head;
+    int len = 0;
+    while (cur != null) {
+        ++len;
+        cur = cur.next;
+    }
+
+    for (int sz = 1; sz < len; sz *= 2) {
+        ListNode start = dmyNode.next;
+        // 指向局部有序链表的最后一个节点
+        ListNode end = dmyNode;
+        while (start != null) {
+            ListNode left = start;
+            ListNode right = cut(start, sz);
+            start = cut(right, sz);
+            end.next = merge(left, right);
+
+            while (end.next != null) {
+                end = end.next;
+            }
+        }
+    }
+
+    return dmyNode.next;
+}
+
+// 输入：head -> n1 -> n2 -> ... -> null, size = 2
+// 1.head -> n1 -> null
+// 2.return: n2 -> ... -> null
+private ListNode cut(ListNode head, int size) {
+    ListNode cur = head;
+    while (--size > 0 && cur != null) {
+        cur = cur.next;
+    }
+    if (cur == null) {
+        return null;
+    }
+    ListNode next = cur.next;
+    cur.next = null;
+    return next;
+}
+```
