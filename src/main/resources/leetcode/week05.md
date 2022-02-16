@@ -733,3 +733,92 @@ private boolean dfs(char[][] board, int x, int y) {
     return false;
 }
 ```
+
+### 旋转链表 (61)
+
+给定一个链表，旋转该链表，将链表中每个节点向右移动k个位置，其中k是非负数:
+
+```java
+public ListNode rotateRight(ListNode head, int k) {
+    if (k == 0 || head == null || head.next == null) {
+        return head;
+    }
+    ListNode cur = head;
+    ListNode tail = head;
+    int len = 0;
+    while (cur != null) {
+        ++len;
+        if (cur.next == null) {
+            tail = cur;
+        }
+        cur = cur.next;
+    }
+
+    // Assert (len > 0)
+    k %= len;
+    if (k == 0) {
+        return head;
+    }
+
+    ListNode dmyNode = new ListNode(-1);
+    dmyNode.next = head;
+    ListNode s = dmyNode;
+    ListNode f = dmyNode;
+    for (int i = 0; i < k + 1; i++) {
+        f = f.next;
+    }
+
+    while (f != null) {
+        s = s.next;
+        f = f.next;
+    }
+    ListNode newHead = s.next;
+    s.next = null;
+    tail.next = head;
+
+    return newHead;
+}
+```
+
+### 回文链表 (234)
+
+判断一个链表是否是回文链表:
+
+```java
+public boolean isPalindrome(ListNode head) {
+    if (head == null || head.next == null) {
+        return true;
+    }
+
+    ListNode s = head;
+    ListNode f = head;
+    while (f.next != null && f.next.next != null) {
+        s = s.next;
+        f = f.next.next;
+    }
+    boolean isEven = f.next != null;
+    if (isEven && s.val != s.next.val) {
+        return false;
+    }
+
+    ListNode mid = s;
+    // 后半段链表
+    ListNode pre = mid;
+    ListNode cur = pre.next;
+    while (cur != null) {
+        ListNode next = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = next;
+    }
+
+    while (head != mid) {
+        if (head.val != pre.val) {
+            return false;
+        }
+        head = head.next;
+        pre = pre.next;
+    }
+    return true;
+}
+```
