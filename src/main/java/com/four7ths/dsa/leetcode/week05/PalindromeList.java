@@ -19,6 +19,7 @@ public class PalindromeList {
             s = s.next;
             f = f.next.next;
         }
+
         boolean isEven = f.next != null;
         // 避免偶数情况下后面head!=mid的判断
         if (isEven && s.val != s.next.val) {
