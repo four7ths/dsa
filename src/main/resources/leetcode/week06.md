@@ -319,3 +319,299 @@ public int uniquePathsWithObstacles(int[][] obstacleGrid) {
     return dp[rows - 1][cols - 1];
 }
 ```
+
+### 零钱找零 (322)
+
+给你一个整数数组coins，表示不同面额的硬币，以及一个整数amount，表示总金额。计算并返回可以凑成总金额所需的最少的硬币个数，如果没有任何一种硬币组合能组成总金额返回-1，每种硬币的数量是无限的。
+
+```java
+private int minCnt = Integer.MAX_VALUE;
+
+// dfs+剪枝
+public int coinChange(int[] coins, int amount) {
+    Arrays.sort(coins);
+    dfs(coins, coins.length - 1, amount, 0);
+    return minCnt == Integer.MAX_VALUE ? -1 : minCnt;
+}
+
+private void dfs(int[] coins, int idx, int left, int cnt) {
+    if (idx < 0 || left / coins[idx] + cnt > minCnt) {
+        return;
+    }
+    if (left % coins[idx] == 0) {
+        minCnt = Math.min(minCnt, cnt + left / coins[idx]);
+        return;
+    }
+    for (int i = left / coins[idx]; i >= 0; i--) {
+        dfs(coins, idx - 1, left - i * coins[idx], cnt + i);
+    }
+}
+
+public int coinChangeV2(int[] coins, int amount) {
+    // dp[i]: 当持有金币为i时，所需兑换次数的最小值
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, Integer.MAX_VALUE);
+    dp[0] = 0;
+
+    for (int coin : coins) {
+        for (int i = coin; i <= amount; i++) {
+            if (dp[i - coin] != Integer.MAX_VALUE) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+    return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+}
+```
+
+### 最长公共子序列 (1143)
+
+给定两个字符串text1和text2，返回这两个字符串的最长公共子序列:
+
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+    int row = text1.length();
+    int col = text2.length();
+
+    int[][] dp = new int[row + 1][col + 1];
+    for (int i = 1; i <= row; i++) {
+        for (int j = 1; j <= col; j++) {
+            if (text1.charAt(i) == text2.charAt(j)) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    return dp[row][col];
+}
+
+// 补充：最长公共子字符串问题
+public String longestCommonSubString(String str1, String str2) {
+    int row = str1.length();
+    int col = str2.length();
+
+    int[][] dp = new int[row][col];
+    int startIdx = -1;
+    int maxLen = 0;
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            //   h e l l o w o r l d
+            // w 0 0 0 0 0 1 0 0 0 0
+            // o 0 0 0 0 1 0 2 0 0 0
+            // r 0 0 0 0 0 0 0 3 0 0
+            // l 0 0 0 0 0 0 0 0 4 0
+            // d 0 0 0 0 0 0 0 0 0 5
+            if (str1.charAt(i) == str2.charAt(j)) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }
+                if (dp[i][j] > maxLen) {
+                    maxLen = dp[i][j];
+                    startIdx = j - maxLen + 1;
+                }
+            }
+        }
+    }
+    return str2.substring(startIdx, startIdx + maxLen);
+}
+```
+
+### 最长递增子序列 (300)
+
+找到无序数组中最长严格递增子序列:
+
+```java
+public int lengthOfLIS(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    int[] dp = new int[nums.length];
+    Arrays.fill(dp, 1);
+    for (int i = 1; i < nums.length; i++) {
+        for (int j = i - 1; j >= 0; j--) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[j] + 1, dp[i]);
+            }
+        }
+    }
+    int max = Integer.MIN_VALUE;
+    for (int n : dp) {
+        max = Math.max(n, max);
+    }
+    return max;
+}
+
+public int lengthOfLISV2(int[] nums) {
+    int[] dp = new int[nums.length];
+    int len = 0;
+    for (int n : nums) {
+        int expectedIdx = Arrays.binarySearch(dp, 0, len, n);
+        if (expectedIdx < 0) {
+            expectedIdx = -(expectedIdx + 1);
+        }
+        dp[expectedIdx] = n;
+        if (expectedIdx == len) {
+            ++len;
+        }
+    }
+    return len;
+}
+```
+
+### 分割等和子集 (416)
+
+给定一个只包含正整数的非空数组nums，判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等:
+
+```java
+public boolean canPartition(int[] nums) {
+    if (nums.length <= 1) {
+        return false;
+    }
+    int sum = 0;
+    int maxN = 0;
+    for (int n : nums) {
+        sum += n;
+        maxN = Math.max(maxN, n);
+    }
+    if ((sum & 1) == 1) {
+        return false;
+    }
+    int target = sum / 2;
+    if (maxN > target) {
+        return false;
+    }
+    int n = nums.length;
+    // dp[i][j]: 从nums[0...i]中选择若干（可以是0）个数字，且只能选择一次，使得它们总和为j
+    boolean[][] dp = new boolean[n][target + 1];
+
+    // dp[0...i][0]: 从nums[0...i]中不选择任何数字，总和为0成立
+    for (int i = 0; i < n; i++) {
+        dp[i][0] = true;
+    }
+    // dp[0][nums[0]]: 从nums[0]中选择nums[0]，总和为nums[0]成立
+    if (nums[0] <= target) {
+        dp[0][nums[0]] = true;
+    }
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j <= target; j++) {
+            // 当前值小于目标值：当前值可以选也可以不选择
+            if (nums[i] < j) {
+                dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i]];
+            } else {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    return dp[n - 1][target];
+}
+
+public boolean canPartitionV2(int[] nums) {
+    if (nums.length <= 1) {
+        return false;
+    }
+    int sum = 0;
+    int maxN = 0;
+    for (int n : nums) {
+        sum += n;
+        maxN = Math.max(maxN, n);
+    }
+    if ((sum & 1) == 1) {
+        return false;
+    }
+    int target = sum / 2;
+    if (maxN > target) {
+        return false;
+    }
+    int n = nums.length;
+    boolean[] dp = new boolean[target + 1];
+    dp[0] = true;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = target; j >= nums[i]; j--) {
+            dp[j] = dp[j] || dp[j - nums[i]];
+        }
+    }
+    return dp[target];
+}
+```
+
+### 摆动序列 (376)
+
+如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为摆动序列。
+给定一个整数序列，返回作为摆动序列的最长子序列的长度:
+
+```java
+public int wiggleMaxLength(int[] nums) {
+    if (nums.length <= 1) {
+        return nums.length;
+    }
+    int res = 1;
+    int[] diff = new int[nums.length - 1];
+    for (int i = 1; i < nums.length; i++) {
+        diff[i - 1] = nums[i] - nums[i - 1];
+    }
+
+    int idx = 0;
+    while (idx < diff.length && diff[idx] == 0) {
+        ++idx;
+    }
+    if (idx == diff.length) {
+        return res;
+    }
+
+    // [1,1,7,4,9,2,5]
+    // 0, 6, -3, 5, -7, 3
+    boolean isPos = diff[idx] > 0;
+    ++res;
+    for (int i = idx + 1; i < diff.length; i++) {
+        if (isPos && diff[i] > 0 || !isPos && diff[i] < 0 || diff[i] == 0) {
+            continue;
+        }
+        isPos = !isPos;
+        ++res;
+    }
+    return res;
+}
+
+public int wiggleMaxLengthV2(int[] nums) {
+    if (nums.length <= 1) {
+        return nums.length;
+    }
+    int[] down = new int[nums.length];
+    int[] up = new int[nums.length];
+    down[0] = 1;
+    up[0] = 1;
+    for (int i = 1; i < nums.length; i++) {
+        if (nums[i] > nums[i - 1]) {
+            up[i] = down[i - 1] + 1;
+            down[i] = down[i - 1];
+        } else if (nums[i] < nums[i - 1]) {
+            down[i] = up[i - 1] + 1;
+            up[i] = up[i - 1];
+        } else {
+            up[i] = up[i - 1];
+            down[i] = down[i - 1];
+        }
+    }
+    return Math.max(down[nums.length - 1], up[nums.length - 1]);
+}
+
+public int wiggleMaxLengthV3(int[] nums) {
+    if (nums.length <= 1) {
+        return nums.length;
+    }
+    int down = 1;
+    int up = 1;
+    for (int i = 1; i < nums.length; i++) {
+        if (nums[i] > nums[i - 1]) {
+            up = down + 1;
+        } else if (nums[i] < nums[i - 1]) {
+            down = up + 1;
+        }
+    }
+    return Math.max(down, up);
+}
+```
