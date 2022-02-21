@@ -320,7 +320,7 @@ public int uniquePathsWithObstacles(int[][] obstacleGrid) {
 }
 ```
 
-### 零钱找零 (322)
+### 零钱找零 I (322)
 
 给你一个整数数组coins，表示不同面额的硬币，以及一个整数amount，表示总金额。计算并返回可以凑成总金额所需的最少的硬币个数，如果没有任何一种硬币组合能组成总金额返回-1，每种硬币的数量是无限的。
 
@@ -361,6 +361,65 @@ public int coinChangeV2(int[] coins, int amount) {
         }
     }
     return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+}
+```
+
+### 零钱找零 II (518)
+【组合问题】
+
+给定一个整数数组coins表示不同面额的硬币，另给一个整数amount表示总金额，计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回0，
+假设每一种面额的硬币有无限个:
+
+```java
+public int change(int amount, int[] coins) {
+    // dp[i][j]: 从i种硬币中选择若干个（可为0），使得总和恰好是j
+    int n = coins.length;
+    int[][] dp = new int[n + 1][amount + 1];
+    dp[0][0] = 1;
+
+    for (int i = 1; i <= n; i++) {
+        int coin = coins[i - 1];
+        for (int j = 0; j <= amount; j++) {
+            // k*coin可以看做是从[coin...amount]
+            for (int k = 0; k * coin <= j; k++) {
+                dp[i][j] += dp[i - 1][j - k * coin];
+            }
+        }
+    }
+    return dp[n][amount];
+}
+
+public int changeV2(int amount, int[] coins) {
+    int[] dp = new int[amount + 1];
+    dp[0] = 1;
+    for (int coin : coins) {
+        for (int i = coin; i <= amount; i++) {
+            dp[i] += dp[i - coin];
+        }
+    }
+    return dp[amount];
+}
+
+private int cnt = 0;
+
+// dfs：超时，当amount较大，coins中coin数值较小时，递归树过深
+public int changeV3(int amount, int[] coins) {
+    Arrays.sort(coins);
+    dfs(coins, 0, amount);
+    return cnt;
+}
+
+private void dfs(int[] coins, int idx, int left) {
+    if (left == 0) {
+        ++cnt;
+        return;
+    }
+    if (idx == coins.length) {
+        return;
+    }
+    for (int i = left / coins[idx]; i >= 0; --i) {
+        dfs(coins, idx + 1, left - i * coins[idx]);
+    }
 }
 ```
 
@@ -613,5 +672,183 @@ public int wiggleMaxLengthV3(int[] nums) {
         }
     }
     return Math.max(down, up);
+}
+```
+
+### 组合总和IV (377)
+
+给定一个由正整数组成且不存在重复数字的数组，找出和为给定目标正整数的组合的个数，注意顺序不同认为是不同的组合:
+
+```java
+public int combinationSum4(int[] nums, int target) {
+    int[] dp = new int[target + 1];
+    dp[0] = 1;
+    for (int i = 0; i <= target; i++) {
+        for (int num : nums) {
+            if (i >= num) {
+                dp[i] += dp[i - num];
+            }
+        }
+    }
+    return dp[target];
+}
+
+// memo[i]：当和为i时，组合的个数
+private int[] memo;
+
+// 记忆化搜索
+public int combinationSum4V2(int[] nums, int target) {
+    memo = new int[target + 1];
+    Arrays.fill(memo, -1);
+    memo[0] = 1;
+    return dfsOptimized01(nums, target);
+}
+
+private int dfsOptimized01(int[] nums, int target) {
+    if (memo[target] != -1) {
+        return memo[target];
+    }
+    int res = 0;
+    for (int num : nums) {
+        if (target >= num) {
+            res += dfsOptimized01(nums, target - num);
+        }
+    }
+    memo[target] = res;
+    return res;
+}
+
+private int res = 0;
+
+// dfs: 超时
+public int combinationSum4V3(int[] nums, int target) {
+    if (nums == null || nums.length == 0) {
+        return res;
+    }
+    dfs(nums, 0, target);
+    return res;
+}
+
+private void dfs(int[] arr, int cur, int target) {
+    if (cur > target) {
+        return;
+    }
+    if (cur == target) {
+        ++res;
+        return;
+    }
+    for (int value : arr) {
+        cur += value;
+        dfs(arr, cur, target);
+        cur -= value;
+    }
+}
+```
+
+### 零和一 (474)
+
+给你一个二进制字符串数组strs和两个整数m和n，找出并返回strs的最大子集的长度，该子集中最多有m个0和n个1:
+
+```java
+public int findMaxForm(String[] strs, int m, int n) {
+    int[][] dp = new int[m + 1][n + 1];
+    for (String str : strs) {
+        int zeros = 0;
+        int ones = 0;
+        for (char ch : str.toCharArray()) {
+            if (ch == '1') {
+                ++ones;
+            } else {
+                ++zeros;
+            }
+        }
+        for (int i = m; i >= zeros; i--) {
+            for (int j = n; j >= ones; j--) {
+                dp[i][j] = Math.max(dp[i][j], dp[i - zeros][j - ones] + 1);
+            }
+        }
+    }
+    return dp[m][n];
+}
+```
+
+### 目标和 (494)
+找到nums一个正子集（P）和一个负子集（N），使得总和等于target
+- 输入: nums: [1, 1, 1, 1, 1], S: 3
+- 输出: 5
+
+解释:</br>
+-1+1+1+1+1 = 3 </br>
++1-1+1+1+1 = 3 </br>
++1+1-1+1+1 = 3 </br>
++1+1+1-1+1 = 3 </br>
++1+1+1+1-1 = 3 </br>
+
+```java
+//  找到nums一个正子集（P）和一个负子集（N），使得总和等于target
+//  sum(P) - sum(N) = target
+//  sum(P) + sum(N) + sum(P) - sum(N) = target + sum(P) + sum(N)
+//  2 * sum(P) = target + sum(nums)
+//  原来的问题已转化为一个求子集的和问题
+public int findTargetSumWays(int[] nums, int target) {
+    int sum = 0;
+    for (int n : nums) {
+        sum += n;
+    }
+    return sum < target || (target + sum) % 2 > 0 ? 0 : subsetSum(nums, (target + sum) >>> 1);
+}
+
+public int subsetSum(int[] nums, int s) {
+    // dp[i]: 从nums选择若干数字，使得和为i的方案个数
+    int[] dp = new int[s + 1];
+    dp[0] = 1;
+    for (int n : nums) {
+        for (int i = s; i >= n; --i) {
+            dp[i] += dp[i - n];
+        }
+    }
+    return dp[s];
+}
+
+private int cnt = 0;
+
+public int findTargetSumWaysV2(int[] nums, int target) {
+    dfs(nums, target, 0, 0);
+    return cnt;
+}
+
+// O(2^n): n=nums.length
+private void dfs(int[] nums, int target, int idx, int sum) {
+    if (idx == nums.length) {
+        if (sum == target) {
+            ++cnt;
+        }
+    } else {
+        dfs(nums, target, idx + 1, sum + nums[idx]);
+        dfs(nums, target, idx + 1, sum - nums[idx]);
+    }
+}
+```
+
+### 单词拆分 (139)
+
+给定一个非空字符串s和一个包含非空单词列表的字典wordDict，判定s是否可以被空格拆分为一个或多个在字典中出现的单词:
+
+```java
+public boolean wordBreak(String s, List<String> wordDict) {
+    int n = s.length();
+    boolean[] dp = new boolean[n + 1];
+    dp[0] = true;
+    Set<String> sets = new HashSet<>(wordDict);
+
+    for (int i = 1; i <= s.length(); i++) {
+        for (int j = 0; j < i; j++) {
+            if (dp[j] && sets.contains(s.substring(j, i))) {
+                dp[i] = true;
+                break;
+            }
+        }
+    }
+    return dp[n];
 }
 ```
