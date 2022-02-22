@@ -6,9 +6,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- *
+ * 349 两数组交集
+ * 给定两个数组，编写一个函数来计算它们的交集:
+ * input: nums1=[1, 2, 2, 1], nums2=[2, 2]
+ * output: [2]
  */
-public class IntersectionOfTwoArray {
+public class IntersectionOfTwoArrayI {
     public int[] intersection(int[] nums1, int[] nums2) {
         Set<Integer> s1 = new HashSet<>();
         Set<Integer> s2 = new HashSet<>();
