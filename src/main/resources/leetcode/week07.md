@@ -535,3 +535,310 @@ public boolean wordPattern(String pattern, String str) {
 }
 ```
 
+
+
+### 存在重复元素 I (217)
+
+如果任何值在数组中出现至少两次，函数返回true。如果数组中每个元素都不相同，则返回false
+
+```java
+public boolean containsDuplicate(int[] nums) {
+  Map<Integer, Integer> maps = new HashMap<>();
+  for (int num : nums) {
+    if (maps.get(num) != null) {
+      return true;
+    } else {
+      maps.put(num, 1);
+    }
+  }
+  return false;
+}
+```
+
+
+
+### 存在重复元素 II (219)
+
+给定一个整数数组和一个整数k，判断数组中是否存在两个不同的索引i和j，使得nums[i]=nums[j]，并且i和j的差的绝对值最大为k。即：滑动窗口k+1范围内，是否有重复的元素
+
+```java
+public boolean containsNearbyDuplicate(int[] nums, int k) {
+  Set<Integer> sets = new HashSet<>();
+  for (int i = 0; i < nums.length; i++) {
+    if (sets.contains(nums[i])) {
+      return true;
+    }
+    sets.add(nums[i]);
+    if (sets.size() == k + 1) {
+      sets.remove(nums[i - k]);
+    }
+  }
+  return false;
+}
+```
+
+
+
+### 存在重复元素 III (220)
+
+给定一个整数数组，判断数组中是否有两个不同的索引i和j，使得nums[i]和nums[j]的差的绝对值最大为t，并且i和j之间的差的绝对值最大为ķ
+
+```java
+public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+  TreeSet<Long> sets = new TreeSet<>();
+  for (int i = 0; i < nums.length; ++i) {
+    // 查找表中是否存在大于等于nums[i] - t且小于等于nums[i] + t的元素
+    Long ceiling = sets.ceiling((long) nums[i] - (long) t);
+    if (ceiling != null && ceiling <= (long) nums[i] + (long) t) {
+      return true;
+    }
+    sets.add((long) nums[i]);
+    if (sets.size() == k + 1) {
+      sets.remove((long) nums[i - k]);
+    }
+  }
+  return false;
+}
+```
+
+
+
+### 四数之和 I (18)
+
+```java
+public List<List<Integer>> fourSum(int[] nums, int target) {
+  List<List<Integer>> res = new ArrayList<>();
+  Arrays.sort(nums);
+  for (int i = 0; i < nums.length - 3; i++) {
+    if (i > 0 && nums[i] == nums[i - 1]) {
+      continue;
+    }
+    List<List<Integer>> tmp =
+      threeSum0(Arrays.copyOfRange(nums, i + 1, nums.length), target - nums[i]);
+    for (List<Integer> list : tmp) {
+      list.add(nums[i]);
+      res.add(list);
+    }
+
+  }
+  return res;
+}
+
+private List<List<Integer>> threeSum0(int[] nums, int target) {
+  List<List<Integer>> res = new ArrayList<>();
+  Arrays.sort(nums);
+  for (int i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] == nums[i - 1]) {
+      continue;
+    }
+    int l = i + 1;
+    int r = nums.length - 1;
+    while (l < r) {
+      int sum = nums[i] + nums[l] + nums[r];
+      if (sum == target) {
+        List<Integer> tmp = new ArrayList<>();
+        tmp.add(nums[i]);
+        tmp.add(nums[l]);
+        tmp.add(nums[r]);
+        res.add(tmp);
+        do {
+          ++l;
+        } while (l < r && nums[l] == nums[l - 1]);
+        do {
+          --r;
+        } while (l < r && nums[r] == nums[r + 1]);
+      } else if (sum > target) {
+        do {
+          --r;
+        } while (l < r && nums[r] == nums[r + 1]);
+      } else {
+        do {
+          ++l;
+        } while (l < r && nums[l] == nums[l - 1]);
+      }
+    }
+  }
+  return res;
+}
+```
+
+
+
+### 四数之和 II (454)
+
+给定四个包含整数的数组列表A, B, C, D，计算有多少个元组(i, j, k, l)，使得A[i]+B[j]+C[k]+D[l]=0。A, B, C, D具有相同的长度N，且 0 ≤ N ≤ 500
+
+```java
+public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+  Map<Integer, Integer> maps = new HashMap<>();
+  for (int a : A) {
+    for (int b : B) {
+      int key = a + b;
+      maps.merge(key, 1, Integer::sum);
+    }
+  }
+  int res = 0;
+  for (int c : C) {
+    for (int d : D) {
+      Integer value = maps.get(-c - d);
+      if (value != null) {
+        res += value;
+      }
+    }
+  }
+  return res;
+}
+```
+
+
+
+### 字母异位词分组 (49)
+
+给定一个字符串数组，将字母异位词组合在一起。字母异位词指字母相同，但排列不同的字符串
+
+* strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+* [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+```java
+public List<List<String>> groupAnagrams(String[] strs) {
+  Map<String, List<String>> maps = new HashMap<>();
+  for (String str : strs) {
+    String key = sortString(str);
+    maps.computeIfAbsent(key, k -> new ArrayList<>()).add(str);
+  }
+  return new ArrayList<>(maps.values());
+}
+
+private String sortString(String str) {
+  char[] chars = str.toCharArray();
+  Arrays.sort(chars);
+  StringBuilder sb = new StringBuilder();
+  for (char ch : chars) {
+    sb.append(ch);
+  }
+  return sb.toString();
+}
+```
+
+
+
+### 回旋镖的数量 (447)
+
+给定平面上n对不同的点，【回旋镖】是由点表示的元组(i, j, k)，其中i和j之间的距离和i和k之间的距离相等（需要考虑元组的顺序）
+
+```java
+public int numberOfBoomerangs(int[][] points) {
+  int res = 0;
+  for (int i = 0; i < points.length; ++i) {
+    int[] p = points[i];
+    Map<Integer, Integer> maps = new HashMap<>();
+    for (int j = 0; j < points.length; ++j) {
+      int[] q = points[j];
+      if (j != i) {
+        int dist = (int) (Math.pow(p[0] - q[0], 2) + Math.pow(p[1] - q[1], 2));
+        maps.merge(dist, 1, Integer::sum);
+      }
+    }
+    for (Integer value : maps.values()) {
+      res += value;
+    }
+  }
+  return res;
+}
+```
+
+
+
+### 两数之和 (I)
+
+给定一个整数数组nums和一个目标值target，请你在该数组中找出和为目标值的那两个整数，并返回他们的数组下标
+
+```java
+public int[] twoSum(int[] nums, int target) {
+  // item -> index
+  Map<Integer, Integer> maps = new HashMap<>();
+  for (int i = 0; i < nums.length; i++) {
+    int completion = target - nums[i];
+    if (maps.containsKey(completion)) {
+      return new int[] {i, maps.get(completion)};
+    } else {
+      maps.put(nums[i], i);
+    }
+  }
+  return new int[] {-1, -1};
+}
+```
+
+
+
+### 三数之和 (15)
+
+```java
+public List<List<Integer>> threeSum(int[] nums) {
+  List<List<Integer>> res = new ArrayList<>();
+  Arrays.sort(nums);
+  for (int i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] == nums[i - 1]) {
+      continue;
+    }
+    int l = i + 1;
+    int r = nums.length - 1;
+    while (l < r) {
+      int sum = nums[i] + nums[l] + nums[r];
+      if (sum == 0) {
+        List<Integer> tmp = new ArrayList<>();
+        tmp.add(nums[i]);
+        tmp.add(nums[l]);
+        tmp.add(nums[r]);
+        res.add(tmp);
+        do {
+          ++l;
+        } while (l < r && nums[l] == nums[l - 1]);
+        do {
+          --r;
+        } while (l < r && nums[r] == nums[r + 1]);
+      } else if (sum > 0) {
+        do {
+          --r;
+        } while (l < r && nums[r] == nums[r + 1]);
+      } else {
+        do {
+          ++l;
+        } while (l < r && nums[l] == nums[l - 1]);
+      }
+    }
+  }
+  return res;
+}
+```
+
+
+
+### 最接近的三数之和 (16)
+
+给定一个包括n个整数的数组nums和一个目标值target，找出nums中的三个整数，使得它们的和与target最接近
+
+```java
+public int threeSumClosest(int[] nums, int target) {
+  Arrays.sort(nums);
+  int closest = nums[0] + nums[1] + nums[2];
+  for (int i = 0; i < nums.length - 2; ++i) {
+    int l = i + 1, r = nums.length - 1;
+    while (l < r) {
+      int curSum = nums[i] + nums[l] + nums[r];
+      if (Math.abs(curSum - target) < Math.abs(closest - target)) {
+        closest = curSum;
+      }
+      if (curSum == target) {
+        return curSum;
+      } else if (curSum > target) {
+        --r;
+      } else {
+        ++l;
+      }
+    }
+  }
+  return closest;
+}
+```
+
