@@ -9,8 +9,6 @@ import com.four7ths.dsa.common.ListNode;
 
 /**
  * 从尾到头打印链表的节点值
- *
- * @author sherman
  */
 public class Q03PrintListFromTailToHead {
 
