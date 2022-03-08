@@ -83,6 +83,7 @@ public class LRUCacheImplV1 {
         head.next = node;
     }
 
+    // 先删除，再添加到头节点
     private void move2Head(Node node) {
         removeNode(node);
         add2Head(node);

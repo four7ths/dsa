@@ -29,7 +29,6 @@ public class DecodeWay {
                 }
             } else if (prev == 1 || (prev == 2 && cur >= 0 && cur <= 6)) {
                 f += g;
-
             }
             g = tmp;
         }

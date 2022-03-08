@@ -41,9 +41,7 @@ public class TrapRainWaterII {
                 if (vis[nx][ny]) {
                     continue;
                 }
-                if (h > heightMap[nx][ny]) {
-                    ans += h - heightMap[nx][ny];
-                }
+                ans += Math.max(0, h - heightMap[nx][ny]);
                 // 注意这里应该是灌过水之后的高度
                 q.add(new int[] {nx, ny, Math.max(heightMap[nx][ny], h)});
                 vis[nx][ny] = true;

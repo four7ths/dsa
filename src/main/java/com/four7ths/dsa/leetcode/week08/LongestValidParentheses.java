@@ -45,7 +45,7 @@ public class LongestValidParentheses {
         int[] dp = new int[s.length()];
         int res = 0;
         for (int i = 1; i < s.length(); i++) {
-            if (s.charAt(i) == '(') {
+            if (s.charAt(i) == ')') {
                 if (s.charAt(i - 1) == '(') {
                     dp[i] = 2;
                     if (i - 2 >= 0) {
