@@ -3,7 +3,7 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 203 remove linked list elements
+ * 203 移除链表元素
  * 删除链表中等于给定值【val】的所有节点
  */
 public class RemoveElemInListI {

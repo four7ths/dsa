@@ -12,7 +12,8 @@ public class ReverseVowels {
             return s;
         }
         char[] chars = s.toCharArray();
-        int lo = 0, hi = chars.length - 1;
+        int lo = 0;
+        int hi = chars.length - 1;
         while (lo < hi) {
             while (lo < hi && !isVowel(chars[lo])) {
                 lo++;

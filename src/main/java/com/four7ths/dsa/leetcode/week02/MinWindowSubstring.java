@@ -1,7 +1,7 @@
 package com.four7ths.dsa.leetcode.week02;
 
 /**
- * 76 minimum window substring
+ * 76 最小覆盖子串
  * 给定一个字符串s、一个字符串t，请在字符串s里面找出：包含t所有字母的最小子串
  */
 public class MinWindowSubstring {
@@ -13,14 +13,16 @@ public class MinWindowSubstring {
         if (s.length() < t.length()) {
             return "";
         }
-        int l = 0, r = -1;
+        int l = 0;
+        int r = -1;
         int[] freqS = new int[LEN];
         int[] freqT = new int[LEN];
         for (char ch : t.toCharArray()) {
             freqT[ch - 'A']++;
         }
 
-        int start = -1, end = s.length() + 1;
+        int start = -1;
+        int end = s.length() + 1;
         while (l <= s.length() - t.length()) {
             if ((r - l + 1) < t.length()) {
                 if (r + 1 < s.length()) {

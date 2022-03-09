@@ -3,11 +3,11 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 2 add two numbers
+ * 2 add two numbers I
  * 给出两个【非空】的链表用来表示两个非负的整数。其中它们各自的位数是按照【逆序】的方式存储的，
  * 并且它们的每个节点只能存储一位数字
  */
-public class AddTwoNumbers {
+public class AddTwoNumbersI {
 
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode dmyNode = new ListNode(-1);
@@ -28,6 +28,4 @@ public class AddTwoNumbers {
         }
         return dmyNode.next;
     }
-
-    // TODO: 增加递归实现
 }

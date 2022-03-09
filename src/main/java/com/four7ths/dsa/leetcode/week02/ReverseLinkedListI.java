@@ -3,8 +3,7 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 206 reverse linked list
- * 翻转链表
+ * 206 翻转链表
  */
 public class ReverseLinkedListI {
     public ListNode reverseList(ListNode head) {

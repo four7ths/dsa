@@ -3,7 +3,7 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 92 reverse linked list II
+ * 92 反转链表 II
  * 反转位置m到n的链表，1 <= m <= n <= 链表长度
  */
 public class ReverseLinkedListII {

@@ -3,7 +3,7 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 328 odd even linked list
+ * 328 奇偶链表
  * 给定一个单链表，把所有索引位（从1开始）为奇数节点和偶数节点分别排在一起
  */
 public class OddEvenList {

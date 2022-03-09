@@ -3,7 +3,7 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 86 partition list
+ * 86 分隔链表
  * 给定一个链表和一个特定值x，对链表进行分隔，使得所有小于x的节点都在大于或等于x的节点之前，
  * 注意保留两个分区中每个节点的初始相对位置
  */

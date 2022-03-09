@@ -1,7 +1,5 @@
 package com.four7ths.dsa.leetcode.week01;
 
-import com.four7ths.dsa.common.CommonUtils;
-
 import static com.four7ths.dsa.common.CommonUtils.swap;
 
 /**
@@ -13,7 +11,8 @@ public class ReverseString {
         if (s == null || s.length <= 1) {
             return;
         }
-        int lo = 0, hi = s.length - 1;
+        int lo = 0;
+        int hi = s.length - 1;
         while (lo < hi) {
             swap(s, lo++, hi--);
         }

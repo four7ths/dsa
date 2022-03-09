@@ -3,8 +3,8 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 82 remove duplicates from sorted list II
- *  * 给定一个【排序】链表，删除所有含有重复数字的节点，只保留原始链表中【没有重复出现】的数字
+ * 82 删除排序链表中的重复元素 II
+ * * 给定一个【排序】链表，删除所有含有重复数字的节点，只保留原始链表中【没有重复出现】的数字
  * >> 1 -> 2 -> 3 -> 3 > 4 -> 4 -> 5
  * << 1 -> 2 -> 5
  */

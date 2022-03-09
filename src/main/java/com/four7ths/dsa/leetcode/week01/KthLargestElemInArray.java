@@ -1,10 +1,11 @@
 package com.four7ths.dsa.leetcode.week01;
 
+import static com.four7ths.dsa.common.CommonUtils.swap;
+
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
-
-import static com.four7ths.dsa.common.CommonUtils.swap;
 
 /**
  * 215 Kth-largest element in an array
@@ -51,7 +52,7 @@ public class KthLargestElemInArray {
 
     // 使用大顶堆
     public int findKthLargestUsingHeap(int[] nums, int k) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+        Queue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
         for (int n : nums) {
             pq.add(n);
         }

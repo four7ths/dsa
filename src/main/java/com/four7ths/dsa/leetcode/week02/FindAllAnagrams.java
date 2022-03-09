@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 给定一个字符串s和p，找出s中所有是s字母异位词的子串，返回这些子串的索引
+ * 438 给定一个字符串s和p，找出s中所有是p字母异位词的子串，返回这些子串的索引
  */
 public class FindAllAnagrams {
 
@@ -16,7 +16,8 @@ public class FindAllAnagrams {
             return ret;
         }
 
-        int l = 0, r = -1;
+        int l = 0;
+        int r = -1;
         int[] freqS = new int[256];
         int[] freqP = new int[256];
         for (char ch : p.toCharArray()) {

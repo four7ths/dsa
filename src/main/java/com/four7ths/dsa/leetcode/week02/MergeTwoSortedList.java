@@ -3,8 +3,7 @@ package com.four7ths.dsa.leetcode.week02;
 import com.four7ths.dsa.common.ListNode;
 
 /**
- * 21 merge two sorted list
- * 合并两个有序链表
+ * 21 合并两个有序链表
  */
 public class MergeTwoSortedList {
 

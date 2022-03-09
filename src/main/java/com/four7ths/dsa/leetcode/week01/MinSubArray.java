@@ -7,7 +7,8 @@ package com.four7ths.dsa.leetcode.week01;
 public class MinSubArray {
     public int minSubArrayLen(int s, int[] nums) {
         int ret = nums.length + 1;
-        int lo = 0, hi = 0;
+        int lo = 0;
+        int hi = 0;
         int sum = 0;
         while (lo < nums.length) {
             if (hi < nums.length && sum < s) {

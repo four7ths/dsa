@@ -1,7 +1,7 @@
 package com.four7ths.dsa.leetcode.week02;
 
 /**
- * 3 long substring without repeating characters
+ * 3 无重复的最长子串
  * 给定一个字符串，找出其中不含有重复字符的最长子串的长度
  */
 public class LongSubStringWithoutRepeat {
