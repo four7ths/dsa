@@ -25,7 +25,7 @@ public class Q63MedianNumInStream {
                 minHeap.add(oldBig);
             }
         } else {
-            // 也可以不判断，直接从弹出minHeap中最小的数放入到maxHeap中，再讲num放入到minHeap中
+            // 也可以不判断，直接从弹出minHeap中最小的数放入到maxHeap中，再将num放入到minHeap中
             if (minHeap.isEmpty() || num <= minHeap.peek()) {
                 maxHeap.add(num);
             } else {

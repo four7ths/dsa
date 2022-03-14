@@ -12,7 +12,7 @@ import com.four7ths.dsa.common.TreeNode;
  */
 public class Q22LevelOfBinaryTree {
     private final List<Integer> lists = new ArrayList<>();
-    private Deque<TreeNode> queue = new LinkedList<>();
+    private final Deque<TreeNode> queue = new LinkedList<>();
 
     public List<Integer> printFromTopToBottom(TreeNode root) {
         if (root == null) {

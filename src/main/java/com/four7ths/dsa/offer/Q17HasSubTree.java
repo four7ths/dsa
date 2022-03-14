@@ -7,33 +7,33 @@ import com.four7ths.dsa.common.TreeNode;
  * 约定：空树不是任意一个树的子结构
  */
 public class Q17HasSubTree {
-    public boolean hasSubtree(TreeNode root1, TreeNode root2) {
+    public boolean hasSubtree(TreeNode p, TreeNode q) {
         boolean result = false;
-        if (root1 != null && root2 != null) {
-            if (root1.val == root2.val) {
-                result = isContains(root1, root2);
+        if (p != null && q != null) {
+            if (p.val == q.val) {
+                result = isContains(p, q);
             }
             if (!result) {
-                result = hasSubtree(root1.left, root2);
+                result = hasSubtree(p.left, q);
             }
             if (!result) {
-                result = hasSubtree(root1.right, root2);
+                result = hasSubtree(p.right, q);
             }
         }
         return result;
     }
 
-    private boolean isContains(TreeNode root1, TreeNode root2) {
+    private boolean isContains(TreeNode p, TreeNode q) {
         // 注意下面两个if顺序不能调换
-        if (root2 == null) {
+        if (q == null) {
             return true;
         }
-        if (root1 == null) {
+        if (p == null) {
             return false;
         }
-        if (root1.val != root2.val) {
+        if (p.val != q.val) {
             return false;
         }
-        return isContains(root1.left, root2.left) && isContains(root1.right, root2.right);
+        return isContains(p.left, q.left) && isContains(p.right, q.right);
     }
 }

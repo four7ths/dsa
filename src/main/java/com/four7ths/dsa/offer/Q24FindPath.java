@@ -20,22 +20,22 @@ public class Q24FindPath {
         if (root == null) {
             return paths;
         }
-        int currentSum = 0;
-        findPath0(root, currentSum, target);
+        int curSum = 0;
+        findPath0(root, curSum, target);
         return paths;
     }
 
-    private void findPath0(TreeNode root, int currentSum, int target) {
-        currentSum += root.val;
+    private void findPath0(TreeNode root, int curSum, int target) {
+        curSum += root.val;
         stk.push(root.val);
-        if (root.left == null && root.right == null && (currentSum == target)) {
+        if (root.left == null && root.right == null && (curSum == target)) {
             paths.add(new ArrayList<>(stk));
         }
         if (root.left != null) {
-            findPath0(root.left, currentSum, target);
+            findPath0(root.left, curSum, target);
         }
         if (root.right != null) {
-            findPath0(root.right, currentSum, target);
+            findPath0(root.right, curSum, target);
         }
         stk.pop();
     }

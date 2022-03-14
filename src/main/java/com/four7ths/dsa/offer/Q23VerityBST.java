@@ -12,10 +12,10 @@ public class Q23VerityBST {
         if (sequence == null || sequence.length == 0) {
             return false;
         }
-        return verifySequenceOfBSTInternal(sequence);
+        return verifySequenceOfBST0(sequence);
     }
 
-    private boolean verifySequenceOfBSTInternal(int[] sequence) {
+    private boolean verifySequenceOfBST0(int[] sequence) {
         if (sequence.length <= 1) {
             return true;
         }
@@ -33,7 +33,7 @@ public class Q23VerityBST {
                 return false;
             }
         }
-        return verifySequenceOfBSTInternal(Arrays.copyOfRange(sequence, 0, i))
-                && verifySequenceOfBSTInternal(Arrays.copyOfRange(sequence, i, length - 1));
+        return verifySequenceOfBST0(Arrays.copyOfRange(sequence, 0, i))
+                && verifySequenceOfBST0(Arrays.copyOfRange(sequence, i, length - 1));
     }
 }
