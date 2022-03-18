@@ -101,7 +101,6 @@ public class MinHeap {
             exch(k, j);
             k = j;
         }
-
     }
 
     private void exch(int i, int j) {

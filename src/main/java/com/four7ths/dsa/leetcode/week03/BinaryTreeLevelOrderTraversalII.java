@@ -1,12 +1,11 @@
 package com.four7ths.dsa.leetcode.week03;
 
-import com.four7ths.dsa.common.TreeNode;
-import sun.awt.image.ImageWatched;
-
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.four7ths.dsa.common.TreeNode;
 
 /**
  * 107 binary tree level order traversal II
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public class BinaryTreeLevelOrderTraversalII {
 
-    private List<List<Integer>> ret = new LinkedList<>();
+    private final List<List<Integer>> ret = new LinkedList<>();
 
     public List<List<Integer>> levelOrderBottom(TreeNode root) {
         if (root == null) {

@@ -15,11 +15,11 @@ public class RestoreIpAddress {
         if (s == null || s.length() < 4 || s.length() > 12) {
             return res;
         }
-        backtrace(s, 0, new ArrayList<>());
+        dfs(s, 0, new ArrayList<>());
         return res;
     }
 
-    private void backtrace(String s, int idx, ArrayList<String> ips) {
+    private void dfs(String s, int idx, ArrayList<String> ips) {
         if (idx == s.length() && ips.size() == 4) {
             res.add(String.join(".", ips));
             return;
@@ -38,7 +38,7 @@ public class RestoreIpAddress {
             }
             ips.add(seg);
             // 从idx+end开始进行下一次回溯
-            backtrace(s, idx + end, ips);
+            dfs(s, idx + end, ips);
             ips.remove(ips.size() - 1);
         }
     }

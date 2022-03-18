@@ -11,7 +11,8 @@ import com.four7ths.dsa.common.TreeNode;
  * 145 二叉树的后序遍历
  */
 public class PostorderTraversal {
-    private List<Integer> res = new ArrayList<>();
+
+    private final List<Integer> res = new ArrayList<>();
 
     public List<Integer> postorderTraversal(TreeNode root) {
         if (root != null) {
@@ -23,8 +24,8 @@ public class PostorderTraversal {
     }
 
     private static class DataFrame {
-        private boolean visited;
-        private TreeNode node;
+        private final boolean visited;
+        private final TreeNode node;
 
         DataFrame(boolean visited, TreeNode node) {
             this.visited = visited;

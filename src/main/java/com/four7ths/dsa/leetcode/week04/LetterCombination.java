@@ -28,18 +28,18 @@ public class LetterCombination {
         if (digits == null || "".equals(digits)) {
             return res;
         }
-        backtrace(digits, 0, new StringBuilder());
+        dfs(digits, 0, new StringBuilder());
         return res;
     }
 
-    private void backtrace(String digits, int idx, StringBuilder sb) {
+    private void dfs(String digits, int idx, StringBuilder sb) {
         if (idx == digits.length()) {
             res.add(sb.toString());
             return;
         }
         String letter = LETTERS[digits.charAt(idx) - '0'];
         for (int i = 0; i < letter.length(); i++) {
-            backtrace(digits, idx + 1, sb.append(letter.charAt(i)));
+            dfs(digits, idx + 1, sb.append(letter.charAt(i)));
             // 注意移除
             sb.deleteCharAt(sb.length() - 1);
         }

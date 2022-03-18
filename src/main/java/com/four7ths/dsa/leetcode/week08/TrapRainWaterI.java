@@ -35,7 +35,7 @@ public class TrapRainWaterI {
         // 单调栈：栈低元素大于等于栈顶元素
         // 当遍历当第i个元素，且栈中存在至少两个元素时：栈顶元素为top，下一个为left，一定有：
         // height[top] <= height[left]，如果height[i] > height[top]，则存在接雨滴区域:
-        // width: (i-left-i), hgt: min(height[left], height[i]) - height[top]
+        // width: (i-left-1), hgt: min(height[left], height[i]) - height[top]
         Deque<Integer> stack = new LinkedList<>();
         int n = height.length;
         for (int i = 0; i < n; ++i) {

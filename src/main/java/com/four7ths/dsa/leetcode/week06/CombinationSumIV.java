@@ -29,17 +29,17 @@ public class CombinationSumIV {
         memo = new int[target + 1];
         Arrays.fill(memo, -1);
         memo[0] = 1;
-        return dfsOptimized01(nums, target);
+        return dfsOptimized0(nums, target);
     }
 
-    private int dfsOptimized01(int[] nums, int target) {
+    private int dfsOptimized0(int[] nums, int target) {
         if (memo[target] != -1) {
             return memo[target];
         }
         int res = 0;
         for (int num : nums) {
             if (target >= num) {
-                res += dfsOptimized01(nums, target - num);
+                res += dfsOptimized0(nums, target - num);
             }
         }
         memo[target] = res;

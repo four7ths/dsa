@@ -25,9 +25,9 @@ public class LongestValidParentheses {
                 }
             }
         }
-        while (!stk.isEmpty()) {
-            mark[stk.pop()] = 1;
-        }
+
+        stk.forEach(idx -> mark[idx] = 1);
+
         int len = 0;
         int ans = 0;
         for (int n : mark) {

@@ -20,11 +20,11 @@ public class PermutataionI {
             return res;
         }
         boolean[] visited = new boolean[nums.length];
-        backtrace(nums, 0, new ArrayList<>(), visited);
+        dfs(nums, 0, new ArrayList<>(), visited);
         return res;
     }
 
-    private void backtrace(int[] nums, int idx, ArrayList<Integer> tmp, boolean[] visited) {
+    private void dfs(int[] nums, int idx, ArrayList<Integer> tmp, boolean[] visited) {
         if (idx == nums.length) {
             res.add(new ArrayList<>(tmp));
             return;
@@ -33,7 +33,7 @@ public class PermutataionI {
             if (!visited[i]) {
                 visited[i] = true;
                 tmp.add(nums[i]);
-                backtrace(nums, idx + 1, tmp, visited);
+                dfs(nums, idx + 1, tmp, visited);
                 visited[i] = false;
                 tmp.remove(tmp.size() - 1);
             }

@@ -11,7 +11,7 @@ public class TrapRainWaterII {
     public int trapRainWater(int[][] heightMap) {
         int m = heightMap.length;
         int n = heightMap[0].length;
-        // {x,y,height}
+        // [x, y, height]
         Queue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
         boolean[][] vis = new boolean[m][n];
         for (int i = 0; i < n; i++) {

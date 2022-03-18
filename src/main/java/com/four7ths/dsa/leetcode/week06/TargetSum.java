@@ -31,7 +31,7 @@ public class TargetSum {
         int[] dp = new int[s + 1];
         dp[0] = 1;
         for (int n : nums) {
-            for (int i = s; i >= n; --i) {
+            for (int i = s; i >= n; i--) {
                 dp[i] += dp[i - n];
             }
         }

@@ -18,11 +18,11 @@ public class PermutationII {
         }
         Arrays.sort(nums);
         boolean[] visited = new boolean[nums.length];
-        backtrace(nums, 0, new ArrayList<>(), visited);
+        dfs(nums, 0, new ArrayList<>(), visited);
         return res;
     }
 
-    private void backtrace(int[] nums, int idx, ArrayList<Integer> tmp, boolean[] visited) {
+    private void dfs(int[] nums, int idx, ArrayList<Integer> tmp, boolean[] visited) {
         if (idx == nums.length) {
             res.add(new ArrayList<>(tmp));
             return;
@@ -34,7 +34,7 @@ public class PermutationII {
                 }
                 tmp.add(nums[i]);
                 visited[i] = true;
-                backtrace(nums, idx + 1, tmp, visited);
+                dfs(nums, idx + 1, tmp, visited);
                 tmp.remove(tmp.size() - 1);
                 visited[i] = false;
             }

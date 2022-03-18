@@ -12,7 +12,7 @@ import com.four7ths.dsa.common.TreeNode;
  */
 public class PreorderTraversal {
 
-    private List<Integer> res = new ArrayList<>();
+    private final List<Integer> res = new ArrayList<>();
 
     public List<Integer> preorderTraversal(TreeNode root) {
         if (root != null) {
@@ -24,8 +24,8 @@ public class PreorderTraversal {
     }
 
     private static class DataFrame {
-        private boolean visited;
-        private TreeNode node;
+        private final boolean visited;
+        private final TreeNode node;
 
         DataFrame(boolean visited, TreeNode node) {
             this.visited = visited;

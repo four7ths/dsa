@@ -15,11 +15,11 @@ public class PalindromePartition {
         if (s == null || s.length() == 0) {
             return res;
         }
-        backtrace(s, 0, new ArrayList<>());
+        dfs(s, 0, new ArrayList<>());
         return res;
     }
 
-    private void backtrace(String s, int idx, ArrayList<String> tmp) {
+    private void dfs(String s, int idx, ArrayList<String> tmp) {
         if (idx == s.length()) {
             res.add(new ArrayList<>(tmp));
             return;
@@ -28,7 +28,7 @@ public class PalindromePartition {
             String seg = s.substring(idx, idx + end);
             if (isPalindrome(seg)) {
                 tmp.add(seg);
-                backtrace(s, idx + end, tmp);
+                dfs(s, idx + end, tmp);
                 tmp.remove(tmp.size() - 1);
             }
         }

@@ -39,6 +39,7 @@ public class LRUCacheImplV1 {
     }
 
     public int get(int key) {
+        // 缓存中如果存在：返回对应value，并将该节点移动到头部
         Node node = cache.get(key);
         if (node != null) {
             move2Head(node);
@@ -49,14 +50,17 @@ public class LRUCacheImplV1 {
 
     public void put(int key, int value) {
         Node node = cache.get(key);
+        // 缓存中如果存在：更新对应value，并将该节点移动到头部
         if (node != null) {
             node.val = value;
             move2Head(node);
         } else {
+            // 新增一个节点：并添加到头部
             Node newNode = new Node(key, value);
             cache.put(key, newNode);
             add2Head(newNode);
             ++size;
+            // 如果超出LRU限制，移除尾部元素
             if (size > capacity) {
                 Node curTail = removeTail();
                 cache.remove(curTail.key);

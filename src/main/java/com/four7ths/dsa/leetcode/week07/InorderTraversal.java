@@ -23,8 +23,8 @@ public class InorderTraversal {
     }
 
     private static class DataFrame {
-        private boolean visited;
-        private TreeNode node;
+        private final boolean visited;
+        private final TreeNode node;
 
         DataFrame(boolean visited, TreeNode node) {
             this.visited = visited;
@@ -45,11 +45,12 @@ public class InorderTraversal {
             if (dataFrame.visited) {
                 res.add(dataFrame.node.val);
             } else {
-
                 if (dataFrame.node.right != null) {
                     stk.push(new DataFrame(false, dataFrame.node.right));
                 }
+
                 stk.push(new DataFrame(true, dataFrame.node));
+
                 if (dataFrame.node.left != null) {
                     stk.push(new DataFrame(false, dataFrame.node.left));
                 }

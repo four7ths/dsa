@@ -2,7 +2,7 @@ package com.four7ths.dsa.leetcode.week03;
 
 /**
  * 5 最长回文字符串
- * * 给定一个二叉树，返回其节点值自底向上的层次遍历
+ * 给定一个字符串，返回该字符串中最长回文子串
  */
 public class LongestPalindrome {
 

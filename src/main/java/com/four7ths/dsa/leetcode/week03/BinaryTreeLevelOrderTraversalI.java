@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class BinaryTreeLevelOrderTraversalI {
 
-    private List<List<Integer>> ret = new ArrayList<>();
+    private final List<List<Integer>> ret = new ArrayList<>();
 
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) {
